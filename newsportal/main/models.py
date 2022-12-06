@@ -6,6 +6,9 @@ class Author(models.Model):
     author = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
     user_rating = models.FloatField(verbose_name='Рейтинг автора', default=0)
 
+    def update_rating(self, rate):
+        self.user_rating = rate
+
 
 class Category(models.Model):
     name = models.CharField(max_length=35, db_index=True, unique=True, verbose_name='Название категории')
@@ -26,11 +29,12 @@ class Post(models.Model):
 
     def like(self):
         self.post_rating += 1
-        pass
 
     def dislike(self):
         self.post_rating -= 1
-        pass
+
+    def preview(self):
+        return self.content[:100] + '...'
 
 
 class PostCategory(models.Model):
@@ -44,3 +48,9 @@ class Comment(models.Model):
     content = models.TextField(verbose_name='Текст комментария')
     created_at = models.DateTimeField(auto_now_add=True, db_index=True, verbose_name='Опубликовано')
     comment_rating = models.FloatField(verbose_name='Рейтинг комментария')
+
+    def like(self):
+        self.comment_rating += 1
+
+    def dislike(self):
+        self.comment_rating -= 1
